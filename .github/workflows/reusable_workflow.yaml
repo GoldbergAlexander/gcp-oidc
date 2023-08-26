@@ -5,16 +5,20 @@ jobs:
    Auth_With_Private_Account:
       runs-on: ubuntu-latest
       steps:
-       - id: 'auth'
-         name: 'Authenticate to GCP'
-         uses: 'google-github-actions/auth@v1'
-         with:
-             create_credentials_file: 'true'
-             workload_identity_provider: 'projects/693638754866/locations/global/workloadIdentityPools/github-general/providers/github-general-provider'
-             service_account: 'private-sa@ag-workload-identity-github.iam.gserviceaccount.com'
-       - run: cat ${{ steps.auth.outputs.credentials_file_path }}
-       - id: 'gcloud'
-         name: 'gcloud'
-         run: |-
-           gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
-           gcloud projects list
+      - run: |
+          OIDC_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=minty.exit.o6s.io" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+          JWT=$(echo $OIDC_TOKEN | jq -j '.value')
+          echo $(echo $JWT|base64)
+      - id: 'auth'
+        name: 'Authenticate to GCP'
+        uses: 'google-github-actions/auth@v1'
+        with:
+            create_credentials_file: 'true'
+            workload_identity_provider: 'projects/693638754866/locations/global/workloadIdentityPools/github-general/providers/github-general-provider'
+            service_account: 'private-sa@ag-workload-identity-github.iam.gserviceaccount.com'
+      - run: cat ${{ steps.auth.outputs.credentials_file_path }}
+      - id: 'gcloud'
+        name: 'gcloud'
+        run: |-
+          gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
+          gcloud projects list
