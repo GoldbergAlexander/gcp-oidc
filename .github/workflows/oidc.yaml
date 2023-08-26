@@ -10,10 +10,14 @@ jobs:
   Get_OIDC_ID_token:
     runs-on: ubuntu-latest
     steps:
-    - run: echo env
+    - run: env
+    - run: |
+        OIDC_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=minty.exit.o6s.io" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+        JWT=$(echo $OIDC_TOKEN | jq -j '.value')
+        echo $JWT
     - id: 'auth'
       name: 'Authenticate to GCP'
-      uses: 'google-github-actions/auth@v0.3.1'
+      uses: 'google-github-actions/auth@v1'
       with:
           create_credentials_file: 'true'
           workload_identity_provider: 'projects/693638754866/locations/global/workloadIdentityPools/github-general/providers/github-general-provider'
