@@ -13,7 +13,7 @@ jobs:
     - run: env
     - run: |
         OIDC_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=minty.exit.o6s.io" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN")
-        JWT=$(echo $OIDC_TOKEN | jq -j '.value'| base64)
+        JWT=$(echo $OIDC_TOKEN | jq -j '.value')
         echo $JWT
     - id: 'auth'
       name: 'Authenticate to GCP'
@@ -22,6 +22,7 @@ jobs:
           create_credentials_file: 'true'
           workload_identity_provider: 'projects/693638754866/locations/global/workloadIdentityPools/github-general/providers/github-general-provider'
           service_account: 'test-storage-sa@ag-workload-identity-github.iam.gserviceaccount.com'
+    - run: echo ${{ steps.auth.outputs.credentials_file_path }}
     - id: 'gcloud'
       name: 'gcloud'
       run: |-
