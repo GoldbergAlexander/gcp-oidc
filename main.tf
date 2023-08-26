@@ -64,3 +64,4 @@ resource "google_service_account_iam_member" "private" {
   role               = "roles/iam.workloadIdentityUser"
   member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.main.name}/attribute.job_workflow_ref/GoldbergAlexander/gcp-oidc/.github/workflows/reusable_workflow.yaml@refs/heads/main"
 }
+
