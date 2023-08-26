@@ -45,3 +45,5 @@ jobs:
        run: |-
          gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
          gcloud projects list
+  Use_Reusable_Workflow:
+    uses: gcp-oidc/main/.github/workflows/reusable_workflow.yaml@main
