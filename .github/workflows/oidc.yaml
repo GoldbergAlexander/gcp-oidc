@@ -28,7 +28,7 @@ jobs:
       run: |-
         gcloud auth login --brief --cred-file="${{ steps.auth.outputs.credentials_file_path }}"
         gcloud storage buckets list
-        glcoud projects list
+        gcloud projects list
   Auth_With_Private_Account:
     runs-on: ubuntu-latest
     steps:
